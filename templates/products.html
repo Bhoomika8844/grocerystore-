@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ category }} Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding-top: 50px;
+        }
+        .product-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .product {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 200px;
+        }
+        .quantity-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .quantity-controls button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .quantity-controls input {
+            width: 40px;
+            text-align: center;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+            border-radius: 5px;
+        }
+        .add-to-cart {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .add-to-cart:hover {
+            background: darkgreen;
+        }
+    </style>
+    <script>
+        function increaseQuantity(id) {
+            let input = document.getElementById("quantity-" + id);
+            input.value = parseInt(input.value) + 1;
+        }
+
+        function decreaseQuantity(id) {
+            let input = document.getElementById("quantity-" + id);
+            if (parseInt(input.value) > 1) {
+                input.value = parseInt(input.value) - 1;
+            }
+        }
+
+        function addToCart(product) {
+            alert(product + " added to cart!");
+        }
+    </script>
+</head>
+<body>
+    <h2>{{ category }} Products</h2>
+    <div class="product-container">
+        {% for product in products %}
+            <div class="product">
+                <p><strong>{{ product[0] }}</strong></p>
+                <p>Price: ₹{{ product[1] }}</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('{{ loop.index }}')">➖</button>
+                    <input type="text" id="quantity-{{ loop.index }}" value="1" readonly>
+                    <button onclick="increaseQuantity('{{ loop.index }}')">➕</button>
+                </div>
+                <button class="add-to-cart" onclick="addToCart('{{ product[0] }}')">🛒 Add to Cart</button>
+            </div>
+        {% endfor %}
+    </div>
+    <br>
+    <a href="{{ url_for('dashboard') }}">⬅ Back to Dashboard</a>
+</body>
+</html>

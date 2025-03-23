@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding-top: 50px;
+        }
+        .category-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .category {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 200px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Product Categories</h2>
+    <div class="category-container">
+        <div class="category"><a href="{{ url_for('show_products', category='Vegetable') }}">🥕 Vegetables</a></div>
+        <div class="category"><a href="{{ url_for('show_products', category='Fruit') }}">🍎 Fruits</a></div>
+        <div class="category"><a href="{{ url_for('show_products', category='Chocolate') }}">🍫 Chocolates</a></div>
+    </div>
+</body>
+</html>
