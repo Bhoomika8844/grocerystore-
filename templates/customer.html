@@ -216,10 +216,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Customer details saved successfully!');
+                        alert('Order placed.Thank you !');
                         form.reset();
                     } else {
-                        alert('Error saving customer details: ' + data.message);
+                        alert('order not placed: ' + data.message);
                     }
                 })
                 .catch(error => {

@@ -69,24 +69,37 @@ def add_to_cart():
     product_name = data['product']
     quantity = data['quantity']
 
-    # Get product price from the database
     conn = sqlite3.connect("products.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT price FROM products WHERE name = ?", (product_name,))
+
+    cursor.execute("SELECT price, stock FROM products WHERE name = ?", (product_name,))
     result = cursor.fetchone()
-    conn.close()
 
     if result:
-        product_price = result[0]
+        product_price, stock = result
+
+        if stock < quantity:
+            conn.close()
+            return jsonify({"message": "❌ Out of Stock!"}), 400
+
         total_price = product_price * quantity
 
-        # Insert the item into the checkout table (storing in database)
-        insert_into_checkout(product_name, quantity, total_price)
+        # Update stock
+        cursor.execute("UPDATE products SET stock = stock - ? WHERE name = ?", (quantity, product_name))
 
-        return jsonify({"message": "Product added to cart successfully!"})
+        # Insert into checkout here (same connection)
+        cursor.execute('''
+            INSERT INTO checkout (product_name, quantity, total_price)
+            VALUES (?, ?, ?)
+        ''', (product_name, quantity, total_price))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({"message": "✅ Product added to cart successfully!"})
     else:
-        return jsonify({"message": "Product not found!"})
-
+        conn.close()
+        return jsonify({"message": "❌ Product not found!"}), 404
 # Route for Cart Page
 @app.route("/cart")
 def view_cart():
