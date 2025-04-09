@@ -1,40 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eGrocery - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
             text-align: center;
-            background-color: #f4f4f4;
-            padding-top: 50px;
         }
-        .category-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .category {
+
+        /* Navigation Bar */
+        header {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 200px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        a {
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+        }
+
+        .nav-links a {
             text-decoration: none;
             color: black;
             font-weight: bold;
         }
+
+        .dropbtn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Background Image Section */
+        .hero {
+            background: url("https://wallpaperaccess.com/full/3493336.jpg") no-repeat center center/cover;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin: 0;
+        }
+
+        .hero p {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 300px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .search-bar button {
+            padding: 10px;
+            border: none;
+            background: green;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+        }
+
+        /* Categories Section */
+        #categories {
+            padding: 20px;
+        }
+
+        .category-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 20px;
+        }
+
+        .category img {
+            width: 150px;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h2>Product Categories</h2>
-    <div class="category-container">
-        <div class="category"><a href="{{ url_for('show_products', category='Vegetable') }}">🥕 Vegetables</a></div>
-        <div class="category"><a href="{{ url_for('show_products', category='Fruit') }}">🍎 Fruits</a></div>
-        <div class="category"><a href="{{ url_for('show_products', category='Chocolate') }}">🍫 Chocolates</a></div>
-    </div>
+
+    <!-- Navigation Bar -->
+    <header>
+        <div class="logo"><b>eGrocery</b></div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li>
+                <div class="dropdown">
+                    <button class="dropbtn">Categories</button>
+                    <div class="dropdown-content">
+                        <a href="/products/Vegetable">Vegetables</a>
+                        <a href="/products/Fruit">Fruits</a>
+                        <a href="/products/Chocolate">Chocolate</a>
+                    </div>
+                </div>
+            </li>
+            <li><a href="/cart"><img src="{{ url_for('static', filename='cart-icon.png') }}" alt="Cart"></a></li>
+        </ul>
+    </header>
+
+    <!-- Hero Section with Background Image -->
+    <section class="hero">
+        <h1>Order Your Daily Groceries</h1>
+        <p>#Free Delivery</p>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search your daily groceries">
+            <button onclick="searchProducts()">Search</button>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories">
+        <h2>Categories</h2>
+        <div class="category-container">
+            <div class="category">
+                <h2>Vegetables</h2>
+                <a href="/products/Vegetable">
+                    <img src="https://tse2.mm.bing.net/th?id=OIP.DwO42xttQSDqXJCLFSIiLQHaDt&pid=Api&P=0&h=180" alt="Vegetables">
+                </a>
+            </div>
+            <div class="category">
+                <h2>Fruits</h2>
+                <a href="/products/Fruit">
+                    <img src="https://tse4.mm.bing.net/th?id=OIP.3SAyq4R9FLoOGkhYu8wzxwHaEo&pid=Api&P=0&h=180" alt="Fruits">
+                </a>
+            </div>
+            <div class="category">
+                <h2>Chocolates</h2>
+                <a href="/products/Chocolate">
+                    <img src="https://tse2.mm.bing.net/th?id=OIP.RccYluLfEWVxK1uv5Yo48QHaE8&pid=Api&P=0&h=180" alt="Chocolates">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function searchProducts() {
+            let query = document.getElementById("search-input").value;
+            if (query.trim() === "") {
+                alert("Please enter a search term.");
+                return;
+            }
+            window.location.href = "/search?query=" + query;
+        }
+    </script>
+
 </body>
 </html>

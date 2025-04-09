@@ -1,100 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{ category }} Products</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding-top: 50px;
+            background-image: url('https://wallpaperbat.com/img/333697-supermarket-wallpaper.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
+
+        .category-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .category button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        .category button:hover {
+            background-color: #0056b3;
+        }
+
         .product-container {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
         }
+
         .product {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 250px;
             text-align: center;
-            width: 200px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
         }
-        .quantity-controls {
+
+        .product img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .quantity-selector {
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            gap: 10px;
             margin: 10px 0;
         }
-        .quantity-controls button {
-            background: #007bff;
+
+        .quantity-selector button {
+            background-color: #007bff;
             color: white;
             border: none;
             padding: 5px 10px;
+            font-size: 18px;
             cursor: pointer;
-            font-size: 16px;
             border-radius: 5px;
         }
-        .quantity-controls input {
-            width: 40px;
-            text-align: center;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            margin: 0 5px;
-            border-radius: 5px;
+
+        .quantity-selector button:hover {
+            background-color: #0056b3;
         }
-        .add-to-cart {
-            background: green;
+
+        .quantity-selector span {
+            font-size: 18px;
+            font-weight: bold;
+            min-width: 20px;
+        }
+
+        .product button.add-to-cart {
+            background-color: green;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
             cursor: pointer;
-            width: 100%;
             border-radius: 5px;
-            margin-top: 10px;
         }
-        .add-to-cart:hover {
-            background: darkgreen;
+
+        .product button.add-to-cart:hover {
+            background-color: darkgreen;
         }
     </style>
-    <script>
-        function increaseQuantity(id) {
-            let input = document.getElementById("quantity-" + id);
-            input.value = parseInt(input.value) + 1;
-        }
-
-        function decreaseQuantity(id) {
-            let input = document.getElementById("quantity-" + id);
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
-            }
-        }
-
-        function addToCart(product) {
-            alert(product + " added to cart!");
-        }
-    </script>
 </head>
 <body>
-    <h2>{{ category }} Products</h2>
+    <h1>Products</h1>
+    <button id="view-cart-btn" onclick="window.location.href='/cart'" 
+    style="display: none; background: orange; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+View Cart
+</button>
+
+    
+    <!-- Category Buttons -->
+    <div class="category-container">
+        <div class="category">
+            <button onclick="filterProducts('Vegetables')">Vegetables</button>
+        </div>
+        <div class="category">
+            <button onclick="filterProducts('Fruits')">Fruits</button>
+        </div>
+        <div class="category">
+            <button onclick="filterProducts('Chocolates')">Chocolates</button>
+        </div>
+    </div>
+
+    <!-- Product List -->
     <div class="product-container">
         {% for product in products %}
-            <div class="product">
-                <p><strong>{{ product[0] }}</strong></p>
-                <p>Price: ₹{{ product[1] }}</p>
-                <div class="quantity-controls">
-                    <button onclick="decreaseQuantity('{{ loop.index }}')">➖</button>
-                    <input type="text" id="quantity-{{ loop.index }}" value="1" readonly>
-                    <button onclick="increaseQuantity('{{ loop.index }}')">➕</button>
-                </div>
-                <button class="add-to-cart" onclick="addToCart('{{ product[0] }}')">🛒 Add to Cart</button>
+        <div class="product" data-category="{% if product[0] in ['Carrot', 'Potato', 'Tomato'] %}Vegetables
+                                            {% elif product[0] in ['Apple', 'Banana', 'Mango'] %}Fruits
+                                            {% elif product[0] in ['Dark Chocolate', 'Milk Chocolate', 'White Chocolate'] %}Chocolates
+                                            {% endif %}">
+            <img src="{% if product[0] == 'Carrot' %} 
+                        https://tse3.mm.bing.net/th?id=OIP.MAIgGI6xRjMVX4mHIl_GtgHaFY&pid=Api&P=0&h=180
+                      {% elif product[0] == 'Potato' %} 
+                        https://tse3.mm.bing.net/th?id=OIP.CGfG8unpX5wE_P2hCHnQgAHaE8&pid=Api&P=0&h=180
+                      {% elif product[0] == 'Tomato' %} 
+                        https://tse1.mm.bing.net/th?id=OIP.TQcnhEptwrySsAfBcmUY2QHaEW&pid=Api&P=0&h=180
+                      {% elif product[0] == 'Apple' %} 
+                        https://tse1.mm.bing.net/th?id=OIP.PNGgH5oF5E5k9xVzizh0awHaE8&pid=Api&P=0&h=180
+                      {% elif product[0] == 'Banana' %} 
+                        https://tse4.mm.bing.net/th?id=OIP.M9trs6eBRYBKMSl0yAnFmgHaEo&pid=Api&P=0&h=180
+                      {% elif product[0] == 'Mango' %} 
+                        https://tse2.mm.bing.net/th?id=OIP.6AztQhNvKOFJDPGYtkCBsgHaEo&pid=Api&P=0&h=180
+                      {% elif product[0] == 'Dark Chocolate' %} 
+                        https://tse3.mm.bing.net/th?id=OIP.W_K4oaNeD_ZtMlyEbzCxQQHaEo&pid=Api&P=0&h=180
+                      {% elif product[0] == 'Milk Chocolate' %} 
+                        https://tse2.mm.bing.net/th?id=OIP.aaxro2v7Ydm7jn0sVvHNYwHaE7&pid=Api&P=0&h=180
+                      {% elif product[0] == 'White Chocolate' %} 
+                        https://tse2.mm.bing.net/th?id=OIP.C5c_xqrx_lbF0DmBEcNjggHaHa&pid=Api&P=0&h=180
+                      {% endif %}" 
+                alt="{{ product[0] }}" class="product-image">
+
+            <h2>{{ product[0] }}</h2>
+            <p>Price: ₹{{ product[1] }}</p>
+
+            <!-- Quantity Selector -->
+            <div class="quantity-selector">
+                <button onclick="decreaseQuantity('{{ product[0] }}')">-</button>
+                <span id="quantity-{{ product[0] }}">1</span>
+                <button onclick="increaseQuantity('{{ product[0] }}')">+</button>
             </div>
+             <button type="button" onclick="addToCart('{{ product[0] }}')" class="add-to-cart">Add to Cart</button>
+            
+            
+        </div>
         {% endfor %}
     </div>
-    <br>
-    <a href="{{ url_for('dashboard') }}">⬅ Back to Dashboard</a>
+
+    <script>
+        function filterProducts(category) {
+            let products = document.querySelectorAll('.product');
+            products.forEach(product => {
+                if (product.getAttribute('data-category').trim() === category) {
+                    product.style.display = "block";
+                } else {
+                    product.style.display = "none";
+                }
+            });
+        }
+
+        function increaseQuantity(productName) {
+            let quantityElement = document.getElementById("quantity-" + productName);
+            let currentQuantity = parseInt(quantityElement.innerText);
+            quantityElement.innerText = currentQuantity + 1;
+        }
+
+        function decreaseQuantity(productName) {
+            let quantityElement = document.getElementById("quantity-" + productName);
+            let currentQuantity = parseInt(quantityElement.innerText);
+            if (currentQuantity > 1) {
+                quantityElement.innerText = currentQuantity - 1;
+            }
+        }
+        function addToCart(productName) {
+    let quantity = document.getElementById("quantity-" + productName).innerText;
+
+    fetch('/add_to_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            product: productName,
+            quantity: parseInt(quantity)
+        })
+    })
+    .then(response => response.text())
+    .then(message => {
+        alert(message);
+
+        // ✅ Make sure the "View Cart" button is visible after adding to cart
+        let viewCartBtn = document.getElementById("view-cart-btn");
+        if (viewCartBtn) {
+            viewCartBtn.style.display = "inline-block";
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+      
+
+    </script>
 </body>
 </html>
