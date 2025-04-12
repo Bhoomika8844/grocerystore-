@@ -1,0 +1,16 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Copy only necessary files
+COPY app.py .
+COPY templates/ ./templates/
+
+# Install Flask directly (no requirements.txt)
+RUN pip install --no-cache-dir flask && \
+    touch products.db && \
+    chmod a+rw products.db
+
+# Secure credentials (remove hardcoded ENV)
+EXPOSE 5000
+CMD ["flask", "run", "--host=0.0.0.0"]
