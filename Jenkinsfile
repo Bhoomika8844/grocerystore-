@@ -5,7 +5,13 @@ pipeline {
         stage('Build') {
             steps {
                 echo '🔨 Building Docker Image...'
-                sh 'docker build -t grocerystore-app .'
+                sh '''
+                docker build -t grocerystore-app . || {
+                    echo "Docker build failed"
+                    exit 1
+                }
+                docker images
+                '''
             }
         }
 
@@ -17,9 +23,12 @@ pipeline {
                 docker rm grocerystore-app || true
                 docker run -d \
                   -p 5000:5000 \
-                  -v ${PWD}/products.db:/app/products.db \
                   --name grocerystore-app \
-                  grocerystore-app
+                  grocerystore-app || {
+                    echo "Docker run failed"
+                    exit 1
+                }
+                docker ps
                 '''
             }
         }
@@ -27,8 +36,13 @@ pipeline {
         stage('Test') {
             steps {
                 echo '🧪 Testing app status...'
-                sh 'sleep 3' // Give the app time to start
-                sh 'curl --fail http://localhost:5000 || exit 1'
+                sh '''
+                sleep 10  # Give Flask more time to start
+                curl --fail http://localhost:5000 || {
+                    echo "Test failed"
+                    exit 1
+                }
+                '''
             }
         }
 
