@@ -6,11 +6,8 @@ pipeline {
             steps {
                 echo '🔨 Building Docker Image...'
                 sh '''
-                docker build -t grocerystore-app . || {
-                    echo "Docker build failed"
-                    exit 1
-                }
-                docker images
+                    docker build -t grocerystore-app . || { echo "Docker build failed"; exit 1; }
+                    docker images
                 '''
             }
         }
@@ -19,16 +16,13 @@ pipeline {
             steps {
                 echo '🚀 Deploying Container...'
                 sh '''
-                docker stop grocerystore-app || true
-                docker rm grocerystore-app || true
-                docker run -d \
-                  -p 5000:5000 \
-                  --name grocerystore-app \
-                  grocerystore-app || {
-                    echo "Docker run failed"
-                    exit 1
-                }
-                docker ps
+                    docker stop grocerystore-app || true
+                    docker rm grocerystore-app || true
+                    docker run -d -p 5000:5000 --name grocerystore-app grocerystore-app || {
+                        echo "Docker run failed"
+                        exit 1
+                    }
+                    docker ps
                 '''
             }
         }
@@ -37,11 +31,11 @@ pipeline {
             steps {
                 echo '🧪 Testing app status...'
                 sh '''
-                sleep 10  # Give Flask more time to start
-                curl --fail http://localhost:5000 || {
-                    echo "Test failed"
-                    exit 1
-                }
+                    sleep 10
+                    curl --fail http://localhost:5000 || {
+                        echo "Test failed"
+                        exit 1
+                    }
                 '''
             }
         }
