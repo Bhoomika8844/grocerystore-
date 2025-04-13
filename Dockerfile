@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY app.py .
 COPY templates/ ./templates/
+COPY tests/ ./tests/ 
 
 RUN pip install --no-cache-dir flask && \
     touch products.db && \
