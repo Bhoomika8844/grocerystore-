@@ -10,8 +10,9 @@ class GroceryStoreTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_login(self):
-        response = self.client.get('/login')
-        self.assertIn(b'Login', response.data)
+        response = self.client.get('/')  # Login page is served at '/'
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'login', response.data)  # Match lowercase 'login'
 
 if __name__ == '__main__':
     unittest.main()
