@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
                 echo '🔨 Building the Docker image...'
@@ -12,35 +18,16 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo '🚀 Deploying the container...'
-
-                // Remove existing container with the same name (if any)
                 sh 'docker rm -f grocerystore || true'
-
-                // Run the new container on port 8090
-                sh 'docker run -d --name grocerystore -p 8090:80 grocerystore'
+                sh 'docker run -d --name grocerystore -p 8090:5000 grocerystore'
+                sleep time: 5, unit: 'SECONDS' // Wait for Flask to start
             }
         }
 
         stage('Test') {
             steps {
                 echo '🧪 Running unit tests...'
-                sh '''
-                docker exec grocerystore python3 -m unittest discover -s tests -p "*.py"
-                '''
-            }
-        }
-
-        stage('Promote') {
-            steps {
-                echo '✅ App is ready for production on port 8090!'
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                echo '🧹 Cleaning up the container...'
-                sh 'docker stop grocerystore || true'
-                sh 'docker rm grocerystore || true'
+                sh 'docker exec grocerystore python3 -m unittest discover -s tests -p "*.py"'
             }
         }
     }
