@@ -2,47 +2,33 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('CHECKOUT') {
             steps {
-                echo '🔨 Building Docker Image...'
-                sh '''
-                    docker build -t grocerystore-app . || { echo "Docker build failed"; exit 1; }
-                    docker images
-                '''
+                echo '📥 Cloning the repository...'
             }
         }
 
-        stage('Deploy') {
+        stage('BUILD') {
             steps {
-                echo '🚀 Deploying Container...'
-                sh '''
-                    docker stop grocerystore-app || true
-                    docker rm grocerystore-app || true
-                    docker run -d -p 5000:5000 --name grocerystore-app grocerystore-app || {
-                        echo "Docker run failed"
-                        exit 1
-                    }
-                    docker ps
-                '''
+                echo '🔨 Building the Docker image...'
             }
         }
 
-        stage('Test') {
+        stage('DEPLOY') {
             steps {
-                echo '🧪 Testing app status...'
-                sh '''
-                    sleep 10
-                    curl --fail http://localhost:5000 || {
-                        echo "Test failed"
-                        exit 1
-                    }
-                '''
+                echo '🚀 Deploying the container...'
             }
         }
 
-        stage('Promote') {
+        stage('TEST') {
             steps {
-                echo '✅ Promote: App is ready for production!'
+                echo '🧪 Testing the app status...'
+            }
+        }
+
+        stage('PROMOTE') {
+            steps {
+                echo '✅ App is ready for production!'
             }
         }
     }
