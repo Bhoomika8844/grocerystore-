@@ -2,13 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo '📥 Cloning the repository...'
-                git 'https://github.com/Bhoomika8844/grocerystore.git'
-            }
-        }
-
         stage('Build') {
             steps {
                 echo '🔨 Building the Docker image...'
