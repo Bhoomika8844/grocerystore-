@@ -2,33 +2,33 @@ pipeline {
     agent any
 
     stages {
-        stage('CHECKOUT') {
+        stage('Checkout') {
             steps {
                 echo '📥 Cloning the repository...'
+                git 'https://github.com/Bhoomika8844/grocerystore.git'
             }
         }
 
-        stage('BUILD') {
+        stage('Build') {
             steps {
                 echo '🔨 Building the Docker image...'
+                sh 'docker build -t grocerystore .'
             }
         }
 
-        stage('DEPLOY') {
+        stage('Deploy') {
             steps {
                 echo '🚀 Deploying the container...'
+                sh 'docker run -d -p 8080:80 grocerystore'
             }
         }
 
-        stage('TEST') {
+        stage('Test') {
             steps {
-                echo '🧪 Testing the app status...'
-            }
-        }
-
-        stage('PROMOTE') {
-            steps {
-                echo '✅ App is ready for production!'
+                echo '🧪 Running unit tests...'
+                sh '''
+                docker exec grocerystore python -m unittest discover -s tests -p "*.py"
+                '''
             }
         }
     }
