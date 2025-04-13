@@ -12,7 +12,7 @@ class GroceryStoreTestCase(unittest.TestCase):
     def test_login(self):
         response = self.client.get('/')  # Login page is served at '/'
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'login', response.data)  # Match lowercase 'login'
+        self.assertIn(b'Login - Grocery Store', response.data)  # Check for the title of the login page
 
 if __name__ == '__main__':
     unittest.main()
