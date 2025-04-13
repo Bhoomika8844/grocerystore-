@@ -12,7 +12,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo '🚀 Deploying the container...'
-                sh 'docker run -d -p 8080:80 grocerystore'
+
+                // Remove existing container with the same name (if any)
+                sh 'docker rm -f grocerystore || true'
+
+                // Run the new container on port 8090
+                sh 'docker run -d --name grocerystore -p 8090:80 grocerystore'
             }
         }
 
@@ -20,8 +25,22 @@ pipeline {
             steps {
                 echo '🧪 Running unit tests...'
                 sh '''
-                docker exec grocerystore python -m unittest discover -s tests -p "*.py"
+                docker exec grocerystore python3 -m unittest discover -s tests -p "*.py"
                 '''
+            }
+        }
+
+        stage('Promote') {
+            steps {
+                echo '✅ App is ready for production on port 8090!'
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                echo '🧹 Cleaning up the container...'
+                sh 'docker stop grocerystore || true'
+                sh 'docker rm grocerystore || true'
             }
         }
     }
