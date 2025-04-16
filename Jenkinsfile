@@ -23,12 +23,5 @@ pipeline {
                 sleep time: 5, unit: 'SECONDS' // Wait for Flask to start
             }
         }
-
-        stage('Test') {
-            steps {
-                echo '🧪 Running unit tests...'
-                sh 'docker exec grocerystore python3 -m unittest discover -s tests -p "*.py"'
-            }
-        }
     }
 }

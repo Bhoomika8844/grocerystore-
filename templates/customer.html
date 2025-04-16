@@ -135,14 +135,16 @@
             const cardDetails = document.getElementById('cardDetails');
 
             // Show/hide card details based on payment method
+            function toggleCardDetails() {
+                const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                cardDetails.style.display = selectedMethod === 'Cash' ? 'none' : 'block';
+            }
+
+            // Initialize card details visibility
+            toggleCardDetails();
+
             paymentMethods.forEach(method => {
-                method.addEventListener('change', function() {
-                    if (this.value === 'Cash') {
-                        cardDetails.style.display = 'none';
-                    } else {
-                        cardDetails.style.display = 'block';
-                    }
-                });
+                method.addEventListener('change', toggleCardDetails);
             });
 
             // Form validation
@@ -173,7 +175,7 @@
                 const phone = document.getElementById('phone').value;
                 const phonePattern = /^\d{10,15}$/;
                 if (!phonePattern.test(phone)) {
-                    document.getElementById('phoneError').textContent = 'Valid phone number is required';
+                    document.getElementById('phoneError').textContent = 'Valid phone number is required (10-15 digits)';
                     isValid = false;
                 } else {
                     document.getElementById('phoneError').textContent = '';
@@ -186,6 +188,32 @@
                     isValid = false;
                 } else {
                     document.getElementById('addressError').textContent = '';
+                }
+
+                // Validate card details if payment method requires it
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                if (paymentMethod !== 'Cash') {
+                    const cardNumber = document.getElementById('cardNumber').value;
+                    const cardName = document.getElementById('cardName').value;
+                    const expiryDate = document.getElementById('expiryDate').value;
+                    const cvv = document.getElementById('cvv').value;
+
+                    if (!cardNumber.trim()) {
+                        alert('Card number is required');
+                        isValid = false;
+                    }
+                    if (!cardName.trim()) {
+                        alert('Name on card is required');
+                        isValid = false;
+                    }
+                    if (!expiryDate.trim()) {
+                        alert('Expiry date is required');
+                        isValid = false;
+                    }
+                    if (!cvv.trim()) {
+                        alert('CVV is required');
+                        isValid = false;
+                    }
                 }
 
                 if (isValid) {
@@ -216,10 +244,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Order placed.Thank you !');
+                        alert('Order placed successfully! Thank you!');
                         form.reset();
                     } else {
-                        alert('order not placed: ' + data.message);
+                        alert('Order not placed: ' + data.message);
                     }
                 })
                 .catch(error => {
