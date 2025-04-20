@@ -18,7 +18,7 @@ def login():
         if username == VALID_USERNAME and password == VALID_PASSWORD:
             session["user"] = username  # Store user session
             return '''<script>
-                        alert("✅ Login Successful!");
+                        alert("✅ Login Successful!");0
                         window.location.href="/dashboard";
                       </script>'''
         else:
@@ -49,6 +49,7 @@ def show_products(category):
     conn.close()
 
     return render_template("products.html", category=category, products=products)
+
 
 # Function to insert cart items into the checkout table
 def insert_into_checkout(product_name, quantity, total_price):
